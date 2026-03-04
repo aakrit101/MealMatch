@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Food Donations Admin</title>
+</head>
+<body>
+  <h1>Food Donations Admin</h1>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <ul>
+        {% for category, message in messages %}
+          <li><strong>{{ category }}:</strong> {{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
+
+  <nav>
+    <ul>
+	<li><a href="/accounts">List Accounts</a></li>
+      <li><a href="/accounts/new">Create Account</a></li>
+      <li><a href="/accounts/edit">Update Account</a></li>
+      <li><a href="/accounts/remove">Delete Account</a></li>
+      <li><a href="/login">Login (test)</a></li>
+    </ul>
+  </nav>
+</body>
+</html>

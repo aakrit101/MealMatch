@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Create Account</title>
+</head>
+<body>
+  <h1>Create Account</h1>
+  <p><a href="/">Home</a></p>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <ul>
+        {% for category, message in messages %}
+          <li><strong>{{ category }}:</strong> {{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
+
+  <form method="POST" action="/accounts/create">
+    <fieldset>
+      <legend>Account Info</legend>
+
+      <label>
+        Account Name
+        <input name="account_name" type="text" required />
+      </label>
+      <br><br>
+
+      <label>
+        Email
+        <input name="email" type="email" required autocomplete="email" />
+      </label>
+      <br><br>
+
+      <label>
+        Password
+        <input name="password" type="password" required autocomplete="new-password" />
+      </label>
+      <br><br>
+
+      <label>
+        Food Genre
+        <input name="food_genre" type="text" required placeholder="Soul Food, Mexican, Bakery..." />
+      </label>
+    </fieldset>
+
+    <br>
+
+    <fieldset>
+      <legend>Address</legend>
+
+      <label>
+        Address Line 1
+        <input name="address_line1" type="text" required />
+      </label>
+      <br><br>
+
+      <label>
+        Address Line 2 (optional)
+        <input name="address_line2" type="text" />
+      </label>
+      <br><br>
+
+      <label>
+        City
+        <input name="city" type="text" required />
+      </label>
+      <br><br>
+
+      <label>
+        State
+        <input name="state" type="text" required maxlength="2" placeholder="NY" />
+      </label>
+      <br><br>
+
+      <label>
+        Postal Code
+        <input name="postal_code" type="text" required />
+      </label>
+    </fieldset>
+
+    <br>
+
+    <button type="submit">Create Account</button>
+  </form>
+
+  <hr>
+
+  <p>
+    Already have an account?
+    <a href="/login">Sign in</a>
+  </p>
+</body>
+</html>

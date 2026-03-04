@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Delete Account</title>
+</head>
+<body>
+  <h1>Delete Account</h1>
+  <p><a href="/">Home</a></p>
+
+  <form method="POST" action="/accounts/delete"
+        onsubmit="return confirm('Delete this account permanently?');">
+    <label>
+      Account Name
+      <input name="account_name" type="text" required />
+    </label>
+    <br><br>
+
+    <label>
+      Password
+      <input name="password" type="password" required />
+    </label>
+
+    <br><br>
+
+    <button type="submit">Delete Account</button>
+  </form>
+</body>
+</html>

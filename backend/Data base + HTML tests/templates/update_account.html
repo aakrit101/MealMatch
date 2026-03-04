@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Update Account</title>
+</head>
+<body>
+  <h1>Update Account</h1>
+  <p><a href="/">Home</a></p>
+
+  <form method="POST" action="/accounts/update">
+    <h3>Sign in</h3>
+    <label>
+      Account Name
+      <input name="account_name" type="text" required />
+    </label>
+    <br><br>
+    <label>
+      Password
+      <input name="password" type="password" required />
+    </label>
+
+    <hr>
+
+    <p>Fill only what you want to change:</p>
+
+    <label>
+      New Account Name
+      <input name="new_account_name" type="text" />
+    </label>
+    <br><br>
+
+    <label>
+      New Password
+      <input name="new_password" type="password" />
+    </label>
+    <br><br>
+
+    <label>
+      Address Line 1
+      <input name="address_line1" type="text" />
+    </label>
+    <br><br>
+
+    <label>
+      Address Line 2
+      <input name="address_line2" type="text" />
+    </label>
+    <br><br>
+
+    <label>
+      City
+      <input name="city" type="text" />
+    </label>
+    <br><br>
+
+    <label>
+      State
+      <input name="state" type="text" maxlength="2" />
+    </label>
+    <br><br>
+
+    <label>
+      Postal Code
+      <input name="postal_code" type="text" />
+    </label>
+    <br><br>
+
+    <label>
+      Food Genre
+      <input name="food_genre" type="text" />
+    </label>
+
+    <br><br>
+
+    <button type="submit">Update Account</button>
+  </form>
+</body>
+</html>
