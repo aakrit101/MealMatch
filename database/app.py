@@ -1,6 +1,10 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from werkzeug.exceptions import BadRequest
 
+from dotenv import load_dotenv
+load_dotenv()
+
+
 from accounts import (
     create_account,
     verify_login,
