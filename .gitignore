@@ -1,3 +1,8 @@
+<<<<<<< HEAD
 .env
 __pycache__/
 *.pyc
+=======
+.DS_Store
+*.save
+>>>>>>> f09c3d8 (Added gitignore and cleaned files)
