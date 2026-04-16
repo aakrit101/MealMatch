@@ -1,15 +1,18 @@
-
 from geopy.geocoders import Nominatim
 import requests
 import time
 
+from database.donations import fulfill_pending_orders
+
 geolocator = Nominatim(user_agent="mealmatch-mapping-demo")
 
-def geocode(address):
+
+def geocode(address: str):
     location = geolocator.geocode(address)
     if not location:
         return None
     return location.latitude, location.longitude
+
 
 def get_route(start_lat, start_lon, end_lat, end_lon):
     url = (
@@ -17,8 +20,8 @@ def get_route(start_lat, start_lon, end_lat, end_lon):
         f"{start_lon},{start_lat};{end_lon},{end_lat}"
         "?overview=false"
     )
-
-    response = requests.get(url)
+t
+    response = requests.get(url, timeout=15)
     data = response.json()
 
     if data.get("code") != "Ok":
@@ -30,51 +33,76 @@ def get_route(start_lat, start_lon, end_lat, end_lon):
 
     return distance_km, duration_min
 
-def main():
-    print("=== MealMatch Mapping Demo ===\n")
 
-    user_address = input("Enter your location: ")
-
-    restaurants = [
-        ("Pizza Place", "11 Clinton St, Plattsburgh, NY"),
-        ("Sushi Spot", "8 Margaret St, Plattsburgh, NY"),
-        ("Coffee Bar", "37 Court St, Plattsburgh, NY"),
+def build_full_address(order: dict) -> str:
+    parts = [
+        order.get("address_line1"),
+        order.get("address_line2"),
+        order.get("city"),
+        order.get("state"),
+        order.get("postal_code"),
     ]
+    return ", ".join(part for part in parts if part)
 
-    user_coords = geocode(user_address)
 
-    if not user_coords:
-        print("Could not find your location.")
+def map_orders(start_address: str):
+    # WARNING:
+    # fulfill_pending_orders() marks orders as completed.
+    # If you only want to preview routes, use list_pending_orders() instead.
+    orders = fulfill_pending_orders()
+
+    if not orders:
+        print("No pending orders found.")
         return
 
-    user_lat, user_lon = user_coords
+    start_coords = geocode(start_address)
+    if not start_coords:
+        print("Could not geocode the starting address.")
+        return
 
-    print("\nFinding nearest restaurants...\n")
-
+    start_lat, start_lon = start_coords
     results = []
 
-    for name, address in restaurants:
-        coords = geocode(address)
-        time.sleep(1)
+    for order in orders:
+        full_address = build_full_address(order)
+        coords = geocode(full_address)
+        time.sleep(1)  # be polite to Nominatim
 
         if not coords:
+            print(f"Could not geocode: {full_address}")
             continue
 
-        lat, lon = coords
-        route = get_route(user_lat, user_lon, lat, lon)
+        end_lat, end_lon = coords
+        route = get_route(start_lat, start_lon, end_lat, end_lon)
 
         if not route:
+            print(f"Could not route to: {full_address}")
             continue
 
-        distance, duration = route
-        results.append((name, distance, duration))
+        distance_km, duration_min = route
+        results.append({
+            "donation_id": order["donation_id"],
+            "account_name": order["account_name"],
+            "address": full_address,
+            "distance_km": distance_km,
+            "duration_min": duration_min,
+        })
 
-    results.sort(key=lambda x: x[1])
+    results.sort(key=lambda x: x["distance_km"])
 
-    for i, (name, distance, duration) in enumerate(results, start=1):
-        print(f"{i}. {name}")
-        print(f"   Distance: {distance:.2f} km")
-        print(f"   Drive Time: {duration:.0f} minutes\n")
+    print("\n=== Routes to Donation Addresses ===\n")
+    for i, r in enumerate(results, start=1):
+        print(f"{i}. Donation #{r['donation_id']} for {r['account_name']}")
+        print(f"   Address: {r['address']}")
+        print(f"   Distance: {r['distance_km']:.2f} km")
+        print(f"   Drive Time: {r['duration_min']:.0f} minutes\n")
+
+
+def main():
+    start_address = input("Enter the starting location: ").strip()
+    map_orders(start_address)
+
 
 if __name__ == "__main__":
     main()
+
